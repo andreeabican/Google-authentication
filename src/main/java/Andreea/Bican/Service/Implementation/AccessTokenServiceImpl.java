@@ -9,11 +9,18 @@ import com.google.api.client.http.HttpTransport;
 import com.google.api.client.http.javanet.NetHttpTransport;
 import com.google.api.client.json.JsonFactory;
 import com.google.api.client.json.jackson2.JacksonFactory;
+import org.json.simple.JSONObject;
+import org.json.simple.parser.JSONParser;
+import org.springframework.expression.ParseException;
 import org.springframework.stereotype.Service;
 
 import java.awt.*;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +29,10 @@ import java.util.List;
  */
 @Service
 public class AccessTokenServiceImpl implements AccessTokenService {
+
+    private final String USER_AGENT = "Mozilla/5.0";
+
+    private final String URL = "https://www.googleapis.com/oauth2/v3/tokeninfo?access_token=";
 
     @Override
     public String getGoogleAccessToken(String code) throws IOException{
@@ -74,4 +85,33 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         // paste into browser to get code
         return authorize_url;
     }
+
+    @Override
+    public String getEmailFromGoogleAccessToken(String token) throws IOException, ParseException, org.json.simple.parser.ParseException {
+
+        URL obj = new URL(URL + token);
+        HttpURLConnection con = (HttpURLConnection) obj.openConnection();
+
+        // optional default is GET
+        con.setRequestMethod("GET");
+
+        con.setRequestProperty("User-Agent", USER_AGENT);
+
+        con.connect();
+        BufferedReader br = new BufferedReader(new InputStreamReader(con.getInputStream()));
+        StringBuilder sb = new StringBuilder();
+        String line;
+        while ((line = br.readLine()) != null) {
+            sb.append(line+"\n");
+        }
+        br.close();
+
+        JSONParser parser = new JSONParser();
+        Object object = parser.parse(String.valueOf(sb));
+        JSONObject jsonObject = (JSONObject) object;
+        String email = (String)jsonObject.get("email");
+
+        return email;
+    }
+
 }
