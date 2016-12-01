@@ -47,7 +47,7 @@ public class AccessTokenServiceImpl implements AccessTokenService {
         GoogleTokenResponse res = flow.newTokenRequest(code).setRedirectUri("http://localhost:8181/code").execute();
         res.getRefreshToken();
         String accessToken = res.getAccessToken();
-
+        System.out.println("Helooooo " + accessToken);
         return accessToken;
     }
 
