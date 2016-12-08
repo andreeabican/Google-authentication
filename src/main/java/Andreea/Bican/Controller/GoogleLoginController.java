@@ -19,7 +19,8 @@ public class GoogleLoginController {
     @RequestMapping("/login/Google")
     public String login(HttpServletResponse httpServletResponse) throws Exception {
         String googleCodeURI = accessTokenService.getGoogleAuthorizationCode();
-        accessTokenService.openBrowser(googleCodeURI);
+       // accessTokenService.openBrowser(googleCodeURI);
+        httpServletResponse.sendRedirect(googleCodeURI);
         return "greeting";
     }
 

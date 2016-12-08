@@ -1,97 +1,10 @@
-<!doctype html>
-<html lang="en">
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <meta charset="utf-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <title>Demo</title>
-    <meta name="description" content="" />
-    <meta name="viewport" content="width=device-width" />
-    <base href="/" />
-    <link rel="stylesheet" type="text/css"
-          href="/webjars/bootstrap/css/bootstrap.min.css" />
-    <script type="text/javascript" src="/webjars/jquery/jquery.min.js"></script>
-    <script type="text/javascript"
-            src="/webjars/bootstrap/js/bootstrap.min.js"></script>
+    <title>Getting Started: Serving Web Content</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 </head>
-<body ng-app="app" ng-controller="home as home">
-<div class="container">
-    <div>
-        <h1>Login</h1>
-    </div>
-</div>
-<br>
-
-<div class="container" ng-show="!home.authenticated">
-    <div>
-        Automatically: <a href="/loginGoogle">click here</a>
-    </div>
-    <div>
-        With Facebook: <a href="/login/facebook">click here</a>
-    </div>
-    <div>
-        With Google: <a href="/login/google">click here</a>
-    </div>
-</div>
-<div class="container" ng-show="home.authenticated">
-    Logged in as: <span ng-bind="home.user"></span><br>
-    Email: <span ng-bind="home.email"></span><br>
-    Id: <span ng-bind="home.id"></span><br>
-    Token: <span ng-bind="home.token"></span><br>
-    JSessionId: <span ng-bind="home.jsessionid"></span><br>
-    <div>
-        <button ng-click="home.logout()" class="btn btn-primary">Logout</button>
-    </div>
-</div>
-<script type="text/javascript" src="/webjars/angularjs/angular.min.js"></script>
-<script type="text/javascript">
-		angular
-				.module("app", [])
-				.config(
-						function($httpProvider) {
-							$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
-						}).controller("home", function($http, $location) {
-					    var self = this;
-					$http.get("/user").success(function(data) {
-						if (data) {
-                                console.log("Intra in name")
-						    if( data.userAuthentication.details!= null)
-						    {
-                                    console.log("Intra in details")
-							    self.user = data.userAuthentication.details.userName;
-							    self.email = data.userAuthentication.details.userEmail;
-								self.id = data.userAuthentication.details.userId;
-								self.token = data.userAuthentication.details.token;
-								self.jsessionid = data.userAuthentication.details.JSessionId;
-							    self.authenticated = true;
-							}else
-							{
-							    self.user = data.principal.username;
-							    self.email = data.principal.email;
-							    seld.id = "none";
-							    self.jsessionid = "none";
-							    self.token = "none";
-							    self.authenticated = true;
-							 }
-
-						}else{
-                                console.log("Intra in al doilea else")
-							self.user = "N/A";
-							self.authenticated = false;
-						}
-					}).error(function() {
-						self.user = "N/A";
-						self.authenticated = false;
-					});
-					self.logout = function() {
-						$http.post('logout', {}).success(function() {
-							self.authenticated = false;
-							$location.path("/");
-						}).error(function(data) {
-							console.log("Logout failed")
-							self.authenticated = false;
-						});
-					};
-				});
-	</script>
+<body>
+<p th:text="'Hello!'" />
 </body>
 </html>
